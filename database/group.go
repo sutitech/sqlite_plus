@@ -54,7 +54,7 @@ func (group *Group) initDatabases() {
 		synchronous:           false,
 		maxOpenConnections:    1,
 		maxIdleConnections:    1,
-		connectionMaxLifeTime: time.Minute,
+		connectionMaxLifeTime: 5 * time.Minute,
 	}
 
 	for i := 0; i < group.size; i++ {
