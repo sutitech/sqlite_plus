@@ -71,3 +71,9 @@ func (partition *Partition) Exec(query string, args ...any) error {
 
 	return group.Exec(query, args...)
 }
+
+func (partition *Partition) Close() {
+	group := partition.getCurrentGroup()
+
+	group.close()
+}

@@ -75,6 +75,12 @@ func (db *Database) setup() error {
 		if err != nil {
 			return err
 		}
+
+		statement = "PRAGMA journal_mode=WAL;"
+		err = db.Exec(statement)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

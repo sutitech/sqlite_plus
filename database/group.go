@@ -73,3 +73,13 @@ func newGroup(identifier string, path string, size int, configuration *GroupConf
 
 	return group
 }
+
+func (group *Group) close() {
+	defer group.pool.Close(*group.context)
+
+	for i := 0; i < group.size; i++ {
+		obj, _ := group.pool.BorrowObject(*group.context)
+		db := obj.(*Database)
+		db.connection.Close()
+	}
+}
