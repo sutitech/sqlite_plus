@@ -19,7 +19,7 @@ type Group struct {
 	path          string
 	size          int
 	configuration *GroupConfiguration
-	databases     []*Database
+	databases     map[string]*Database
 	balancer      *roundrobin.RoundRobin
 }
 
@@ -47,7 +47,7 @@ func newGroup(identifier string, path string, size int, configuration *GroupConf
 }
 
 func (group *Group) initDatabases() {
-	var databases []*Database
+	var databases map[string]*Database = make(map[string]*Database)
 
 	// Needs to move up
 	config := &DatabaseConfiguration{
@@ -61,24 +61,22 @@ func (group *Group) initDatabases() {
 		databaseName := fmt.Sprintf("%s/%s_%d.db", group.path, group.identifier, i)
 		database, _ := createDatabase(databaseName, "sqlite3", config)
 		group.configuration.migrateDatabase(database)
-		databases = append(databases, database)
+		databases[fmt.Sprintf("%d", i)] = database
 	}
 
 	group.databases = databases
 }
 
-func (group *Group) nextDatabaseIndex() int {
+func (group *Group) nextDatabaseIndex() string {
 	if group.configuration.balancerPolicy == GroupLoadBalancerPolicy_Random {
-		return rand.Intn(group.size)
+		return fmt.Sprintf("%d", rand.Intn(group.size))
 	}
 
 	if group.configuration.balancerPolicy == GroupLoadBalancerPolicy_RoundRobin {
-		index := group.balancer.Next().String()
-		num, _ := strconv.Atoi(index)
-		return num
+		return group.balancer.Next().String()
 	}
 
-	return 0
+	return "0"
 }
 
 func generateStringArray(max int) []string {
