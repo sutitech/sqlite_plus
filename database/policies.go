@@ -6,6 +6,7 @@ const (
 	GroupLoadBalancerPolicy_Random GroupLoadBalancerPolicy = iota
 	GroupLoadBalancerPolicy_RoundRobin
 	GroupLoadBalancerPolicy_None
+	GroupLoadBalancerPolicy_Pool
 )
 
 type GroupRotationPolicy int
