@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 	"sync/atomic"
-	"time"
 
-	"github.com/jolestar/go-commons-pool/v2"
+	pool "github.com/jolestar/go-commons-pool/v2"
 )
 
 type GroupConfiguration struct {
@@ -45,7 +44,7 @@ func newGroup(identifier string, path string, size int, configuration *GroupConf
 				synchronous:           false,
 				maxOpenConnections:    1,
 				maxIdleConnections:    1,
-				connectionMaxLifeTime: 5 * time.Minute,
+				connectionMaxLifeTime: 0,
 			}
 
 			databaseName := fmt.Sprintf("%s/%s_%d.db", path, identifier, atomic.AddUint64(&v, 1))
